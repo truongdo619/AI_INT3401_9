@@ -97,16 +97,15 @@ def depthFirstSearch(problem):
     parent = dict()
     stack.push((problem.getStartState(), None, 0))
     while not stack.isEmpty():
-        node = stack.pop()
-        if problem.isGoalState(node[0]):
-            print(getAction(parent, node))
-            return getAction(parent, node)
-        if not node[0] in closed:
-            closed.add(node[0])
-            for x in problem.getSuccessors(node[0]):
+        currentNode = stack.pop()
+        if problem.isGoalState(currentNode[0]):
+            return getAction(parent, currentNode)
+        if not currentNode[0] in closed:
+            closed.add(currentNode[0])
+            for x in problem.getSuccessors(currentNode[0]):
                 if not x[0] in closed:
                     stack.push(x)
-                    parent[x] = node
+                    parent[x] = currentNode
 
     return []
     util.raiseNotDefined()
@@ -120,16 +119,16 @@ def breadthFirstSearch(problem):
     parent = dict()
     queue.push((problem.getStartState(), None, 0))
     while not queue.isEmpty():
-        node = queue.pop()
-        if problem.isGoalState(node[0]):
-            print(getAction(parent, node))
-            return getAction(parent, node)
-        if not node[0] in closed:
-            closed.add(node[0])
-            for x in problem.getSuccessors(node[0]):
+        currentNode = queue.pop()
+        if problem.isGoalState(currentNode[0]):
+            print(getAction(parent, currentNode))
+            return getAction(parent, currentNode)
+        if not currentNode[0] in closed:
+            closed.add(currentNode[0])
+            for x in problem.getSuccessors(currentNode[0]):
                 if not x[0] in closed:
                     queue.push(x)
-                    parent[x] = node
+                    parent[x] = currentNode
 
     return []
     util.raiseNotDefined()
@@ -138,26 +137,25 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
-    print("Start:", problem.getStartState())
-    queue = util.PriorityQueue()
+    PriorityQueue = util.PriorityQueue()
     closed = set()
     parent = dict()
-    cost = dict()
-    queue.push(item=(problem.getStartState(), None),priority=0)
-    cost[problem.getStartState()] = 0
-    while not queue.isEmpty():
-        node = queue.pop()
+    totalCost = dict()
+    PriorityQueue.push(item=(problem.getStartState(), None),priority=0)
+    totalCost[problem.getStartState()] = 0
+    while not PriorityQueue.isEmpty():
+        currentNode = PriorityQueue.pop()
         
-        if problem.isGoalState(node[0]):
-            print(getAction(parent, node))
-            return getAction(parent, node[:2])
-        if not node[0] in closed:
-            closed.add(node[0])
-            for x in problem.getSuccessors(node[0]):
+        if problem.isGoalState(currentNode[0]):
+            print(getAction(parent, currentNode))
+            return getAction(parent, currentNode[:2])
+        if not currentNode[0] in closed:
+            closed.add(currentNode[0])
+            for x in problem.getSuccessors(currentNode[0]):
                 if not x[0] in closed:
-                    parent[x[:2]] = node[:2]
-                    cost[x[0]] = cost[node[0]] + x[2]
-                    queue.push(x[:2], cost[x[0]])
+                    parent[x[:2]] = currentNode[:2]
+                    totalCost[x[0]] = totalCost[currentNode[0]] + x[2]
+                    PriorityQueue.push(x[:2], totalCost[x[0]])
 
     return []
     util.raiseNotDefined()
@@ -172,24 +170,24 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    queue = util.PriorityQueue()
+    PriorityQueue = util.PriorityQueue()
     closed = set()
     parent = dict()
-    cost = dict()
-    queue.push(item=(problem.getStartState(), None), priority=0)
-    cost[problem.getStartState()] = 0
-    while not queue.isEmpty():
-        node = queue.pop()
+    totalCost = dict()
+    PriorityQueue.push(item=(problem.getStartState(), None), priority=0)
+    totalCost[problem.getStartState()] = 0
+    while not PriorityQueue.isEmpty():
+        currentNode = PriorityQueue.pop()
 
-        if problem.isGoalState(node[0]):
-            return getAction(parent, node[:2])
-        if not node[0] in closed:
-            closed.add(node[0])
-            for x in problem.getSuccessors(node[0]):
+        if problem.isGoalState(currentNode[0]):
+            return getAction(parent, currentNode[:2])
+        if not currentNode[0] in closed:
+            closed.add(currentNode[0])
+            for x in problem.getSuccessors(currentNode[0]):
                 if not x[0] in closed:
-                    parent[x[:2]] = node[:2]
-                    cost[x[0]] = cost[node[0]] + x[2]
-                    queue.push(x[:2], cost[x[0]] + heuristic(x[0], problem))
+                    parent[x[:2]] = currentNode[:2]
+                    totalCost[x[0]] = totalCost[currentNode[0]] + x[2]
+                    PriorityQueue.push(x[:2], totalCost[x[0]] + heuristic(x[0], problem))
 
     return []
     util.raiseNotDefined()
